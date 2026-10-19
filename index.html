@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./index2.css">
+   <link rel="icon" href="./Logo-UIN-SU-Medan-PNG-1.png">
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Black+Ops+One&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <title>Tugass Bapak Heri Santoso,M.Kom</title>
+</head>
+<body>
+    <div class="text">
+    <h1 class="teks1"> <span style="color: palevioletred;">Haii</span> Ini adalah  <span style="color: palevioletred;">Website</span><br/> Print Menggunakan <span style="color: cornflowerblue;">Suara :3</span></h1>
+    <h3 class="teks1"> <span style="color: palevioletred;">Din Indallah Si-3</span></h3>
+    </div>
+
+    
+<button id="button" class="teks1" onclick="mulai()">Bersuaraa!</button>
+
+<script>
+async function mulai() {
+  const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+  const audio = new AudioContext();
+  await audio.resume();
+
+  const mic = audio.createMediaStreamSource(stream);
+  const analyser = audio.createAnalyser();
+  analyser.fftSize = 512;
+  mic.connect(analyser);
+
+  const data = new Uint8Array(analyser.fftSize);
+  let terakhir = 0;
+
+  function cek() {
+    analyser.getByteTimeDomainData(data);
+    const volume = Math.max(...data.map(n => Math.abs(n - 128)));
+
+    if (volume > 20 && Date.now() - terakhir > 300) {
+      terakhir = Date.now();
+      clearTimeout(window.timerTepuk);
+      window.timerTepuk = setTimeout(() => {
+        stream.getTracks().forEach(t => t.stop());
+        audio.close();
+        window.print();
+      }, 500);
+    }
+
+    if (stream.active) requestAnimationFrame(cek);
+  }
+
+  cek();
+}
+</script>
+
+
+<img class="dindahh" src="./WhatsApp Image 2026-10-19 at 13.16.53.jpeg" alt="Din Indallah">
+
+</body>
+</html>
